@@ -1,0 +1,62 @@
+
+<html>
+<head>
+
+<script src="PatienceDiff.js"></script>
+
+<style>
+div {
+  font-family: Courier;
+  font-size: 12;
+}
+
+textarea {
+  font-family: Courier;
+  font-size: 12;
+}
+</style>
+
+</head>
+
+<body onload="init()">
+<script type="text/javascript">
+
+var aLines = `/\/ Opening comment\n#include <stdio.h>\n\n/\/ Frobs foo heartily\nint frobnitz(int foo)\n{\n    int i;\n    for(i = 0; i < 10; i++)\n    {\n        printf("Your answer is: ");\n        printf("%d\\n", foo);\n    }\n}\n\nint fact(int n)\n{\n    if(n > 1)\n    {\n        return fact(n-1) * n;\n    }\n    return 1;\n}\n\nint main(int argc, char **argv)\n{\n    frobnitz(fact(10));\n}`;
+var bLines = `#include <stdio.h>\n\nint fib(int n)\n{\n    if(n > 2)\n    {\n        return fib(n-1) + fib(n-2);\n    }\n    return 1;\n}\n\n/\/ Frobs foo heartily\nint frobnitz(int foo)\n{\n    int i;\n    for(i = 0; i < 10; i++)\n    {\n        printf("%d\\n", foo);\n    }\n}\n\nint main(int argc, char **argv)\n{\n    frobnitz(fib(10));\n}\n/\/ Closing comment`;
+
+function init() {
+  document.getElementById("aLines").value = aLines;
+  document.getElementById("bLines").value = bLines;
+}
+
+function calcDiff() {
+  var a = document.getElementById("aLines").value.split("\n");
+  var b = document.getElementById("bLines").value.split("\n");
+  var diff = patienceDiff(a , b);
+  
+  var diffLines = "";
+  diff.forEach((o) => {
+    if (o.aIndex < 0) {
+      diffLines += "+  ";
+    } else if (o.bIndex < 0) {
+      diffLines += "-  ";
+    } else {
+      diffLines += "   ";
+    }
+    diffLines += o.line + "\n";
+  });
+  
+  document.getElementById("diff").value = diffLines;
+}
+
+</script>
+
+<div>
+<textarea id="aLines" style="width:25%; height:100%"></textarea>
+<textarea id="bLines" style="width:25%; height:100%"></textarea>
+<button type="button" onclick="calcDiff()" style="position:absolute; top:25%; left:55%">=> Diff =></button>
+<textarea id="diff" style="float:right; width:33%; height:100%;"></textarea>
+</div>
+
+</body>
+</html>
