@@ -4,7 +4,7 @@ A javascript implementation, suitable for use within a browser, of the Patience 
 # Example
 Simply download the PatienceDiff.js file which contains the complete algorithm, and PatienceDiff.html which exemplifies how to use the algorithm.  Then open PatienceDiff.html in a browser, and press the "=> Diff =>" button to calculate the difference between the two blocks of text.
 
-# Javascript function use:
+# Javascript Function Use
 
 <b>result = patienceDiff(aLines, bLines)</b>
 
