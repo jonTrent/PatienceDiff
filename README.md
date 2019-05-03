@@ -15,7 +15,10 @@ where:<br>
   * aIndex = index of original line in aLines, or -1 if line is added from bLines.
   * bIndex = index of new line in bLines, or -1 if line is deleted from aLines.
 
-[Sample use of javascript Patience Diff](PatienceDiff.png)
+# Example
+Simply download the PatienceDiff.js file which contains the complete algorithm, and PatienceDiff.html which exemplifies how to use the algorithm.  Then open PatienceDiff.html in a browser, and press the "=> Diff =>" button to calculate the difference between the two blocks of text.
+
+![Results of javascript Patience Diff](PatienceDiff.png)
 
 # Explanation of the Patience Diff Algorithm
 The algorithm is best explained by describing the supporting algorithms.
@@ -67,8 +70,3 @@ Voila!
 
 # References
 The patience diff algorithm is credited to Bram Cohen of Bittorrent fame. Additionally, the article by "Alfedenzo" at https://alfedenzo.livejournal.com/170301.html was of immense help in understanding the Longest Common Subsequence (LCS) algorithm, and by tradition, is also the source of the data embedded in the associated example HTML document.
-
-# Example
-Simply download the PatienceDiff.js file which contains the complete algorithm, and PatienceDiff.html which exemplifies how to use the algorithm.  Then open PatienceDiff.html in a browser, and press the "=> Diff =>" button to calculate the difference between the two blocks of text.
-
-
