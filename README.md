@@ -65,7 +65,7 @@ Finally we get to the main routine, which basically starts with the entire A and
   - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch).
   - And finally, call addSubMatch with any lines following the last LCS entry.
 
-Voila! An enjoyable algorithm for one who seeks elegant solutions...
+Voila! An enjoyable algorithm to code for one who seeks elegant solutions...
 
 
 # References
