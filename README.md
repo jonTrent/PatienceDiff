@@ -34,7 +34,7 @@ The uniqueCommon function does what it's named, and finds the unique common line
 In terms of complexity, once the A and B Maps are in hand, the uniqueCommon function simply walks the A Map seeking presumably via hash the B Map value, and therefore is also O(N) in a worse case situation in which arrays A and B completely match with unique lines.
 
 ### longestCommonSubsequence(abMap) returns Array
-The longestCommonSubsequence algorithm is best described by the "Alfedenzo" artilce at https://alfedenzo.livejournal.com/170301.html.  Suffice to say, it walks the result of uniqueCommon to build a jagged array, and then walks this jagged array backwards to find the longest common subsequence.  Since the jagged array is walked backwards, it is reversed and then returned.
+The longestCommonSubsequence algorithm is best described by the "Alfedenzo" article at https://alfedenzo.livejournal.com/170301.html.  Suffice to say, it walks the result of uniqueCommon to build a jagged array, and then walks this jagged array backwards to find the longest common subsequence.  Since the jagged array is walked backwards, it is reversed and then returned.
 
 In terms of complexity, again this is O(N) worse case, as the three (3) steps are all single pass linear in nature: 1) building the jagged array, 2) walking the jagged array backwards, and 3) reversing the result before returning.
 
@@ -54,7 +54,7 @@ The sequence of calls to addSubMatches will be with the following ranges:
 
 Once addSubMatch begins processing, the first thing it does is match any lines at the beginning and ending of the A and B ranges.  The matches at the beginning are added to the "results" array.  The matches at the end of the range are held, until the disposition of the sandwiched lines are dealt with by determining if this remaining subsequence has any unique lines in common between arrays A and B, in which case a recursive call is made to the core recurseLCS function.  If there are no unique lines in common, then we're at a point where anything in array A can be included in "results" as having been removed, and anything in array B can be included in "results" as having been added.  If having traveled the recursion path, once the recursion unwinds, any intervening results will have been placed on the "results" array, at which time now addSubMatch can place the matches found at the end of the original subsequence on the "results" array, ensuring the proper order of the results.
 
-In terms of complexity, addSubMatch on its own is linear and therefore O(N), but the occasional recursion in essense is recalculating uniqueCommon lines in the smaller subsequence.  It kinda smells like O(N log N), but would have to run a large sample of tests to verify...
+In terms of complexity, addSubMatch on its own is linear and therefore O(N), but the occasional recursion in essense is recalculating uniqueCommon lines in the smaller subsequence.  It kinda smells like O(N log N) worse case, and in best case (where both arrays A and B virtually match), addSubMatch will be O(N) due to little or no recursion.  A large sample of tests would be required to verify...
 
 ### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds to "results" array via addSubMatch
 Finally we get to the main routine, which basically starts with the entire A and B array ranges, performing the following logic:
@@ -65,7 +65,7 @@ Finally we get to the main routine, which basically starts with the entire A and
   - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch).
   - And finally, call addSubMatch with any lines following the last LCS entry.
 
-Voila!
+Voila! An enjoyable algorithm for one who seeks elegant solutions...
 
 
 # References
