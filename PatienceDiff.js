@@ -158,7 +158,7 @@ function patienceDiff(aLines, bLines) {
     // whether there are any unique common lines between aLines and bLines.
     //
     // If not, add the subsequence to the result (all aLines having been
-    // removed, and all bLines having been added.
+    // removed, and all bLines having been added).
     //
     // If there are unique common lines between aLines and bLines, then let's
     // recursively perform the patience diff on the subsequence.
@@ -194,15 +194,10 @@ function patienceDiff(aLines, bLines) {
       if (aLo < x[0].indexA || bLo < x[0].indexB) {
         addSubMatch(aLo, x[0].indexA-1, bLo, x[0].indexB-1);
       }
-      var n = x.length - 1;
 
-      var i;
+      let i;
       for (i = 0; i < x.length - 1; i++) {
-        addToResult(x[i].indexA, x[i].indexB);
-
-        if (x[i].indexA < x[i+1].indexA - 1 && x[i].indexB < x[i+1].indexB - 1) {
-          addSubMatch(x[i].indexA+1, x[i+1].indexA-1, x[i].indexB+1, x[i+1].indexB-1);
-        }
+        addSubMatch(x[i].indexA, x[i+1].indexA-1, x[i].indexB, x[i+1].indexB-1);
       }
       
       if (x[i].indexA < aHi || x[i].indexB < bHi) {
