@@ -1,5 +1,5 @@
 # PatienceDiff
-A consice javascript implementation of the Patience Diff algorithm.
+A concise javascript implementation of the Patience Diff algorithm.
 
 # Interface
 ### PatienceDiff(aLines, bLines)
