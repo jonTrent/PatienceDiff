@@ -56,7 +56,7 @@ Once addSubMatch begins processing, the first thing it does is match any lines a
 
 In terms of complexity, addSubMatch on its own is linear and therefore O(N), but the occasional recursion in essense is recalculating uniqueCommon lines in the smaller subsequence.  It kinda smells like O(N log N), but would have to run a large sample of tests to verify...
 
-### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds values to the "results" array via addSubMatch
+### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds to "results" array via addSubMatch
 Finally we get to the main routine, which basically starts with the entire A and B array ranges, performing the following logic:
 - Get the longest common subsequence (LCS) of unique lines for the provided range A[aLo..aHi] and B[bLo..bHi].
 - If there are no unique lines, then call addSubMatch with the entire range to add the lines to the "results" array.
