@@ -64,10 +64,11 @@ Finally we get to the main routine, which basically starts with the entire A and
   - call addSubMatch with any lines preceding the first LCS entry.
   - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch) for the rows between the LCS entries.
   - And finally, call addSubMatch with any lines following the last LCS entry.
+  
 When complete, the "result" array will contain the ordered list of lines representing the Patience Diff.
 
 
-Voila! An enjoyable algorithm to code for one who seeks elegant solutions...
+#### *Voila! An enjoyable algorithm to code for one who seeks elegant solutions...*
 
 
 # References
