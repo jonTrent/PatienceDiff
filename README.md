@@ -24,14 +24,14 @@ Simply download the PatienceDiff.js file which contains the complete algorithm, 
 The algorithm is best explained by describing the supporting algorithms.
 
 ### findUnique(arr, lo, hi) returns Map
-The Patience Diff algorithm requires unique entries between the arrays being compared when applying the Longest Common Subsequence algorithm, and the findUnique function uses javascript's map method to calculate the count of the lines of equal value.  Ie, there's no sense in wasting cycles in finding the unique lines between array A and B until finding the unique lines in A and B individually.  After running through all the lines in the array, the Map will contain the line as the key, and an object with properties of the count of matching lines, and the index of the last matching line.  Then, the Map is walked to remove all entries except for those with count === 1.  Note that since this Patience Diff algorithm is recursive, that findUnique takes the lo and hi range of the array as input parameters.  This also eliminates the performance hit of creating slices of the A and B arrays. 
+The Patience Diff algorithm requires unique entries between the arrays when applying the Longest Common Subsequence algorithm, and the findUnique function uses javascript's Map method to accumulate the total number of like lines.  Ie, there's no sense in wasting cycles in finding the unique lines between array A and B until finding the unique lines in A and B individually.  After running through all the lines in the array, the Map will contain the line as the key, and an object as the value, with properties of the count of like lines, and the index of the last matched line.  Then, the Map is walked to remove all entries except for those with count === 1.  Note that since this Patience Diff algorithm is recursive, that findUnique takes the lo and hi range of the array as input parameters.  The use of range indexes also eliminates the performance hit of creating slices of the A and B arrays. 
 
 In terms of complexity, presumably the javascript Map function is based on a hashing algorithm, and therefore O(1) in execution, and therefore the findUnique function is O(N).  Or more accurately, O(Na) and O(Nb) for each array, but assuming the arrays ultimately being compared are generally equal in length, the complexity is O(N).  Additionally, walking the Map to eliminate all but count === 1 is also linear in time, therefore not affecting the complexity.
 
 ### uniqueCommon(aArray, aLo, aHi, bArray, bLo, bHi) returns Map
-The uniqueCommon function does what it's named, and finds the unique common lines between arrays A and B.  This is accomplished first by calling findUnique individually for arrays A and B, at which point two Maps are in hand of the unique lines in A and unique lines in B.  Then array A is walked, looking for the corresponding line in array B.  If found, the A Map entry is supplemented with the corresponding matching B Map entry, otherwise the A Map entry is deleted as there is no matching unique line in B.  Again, this function takes lo and hi ranges, as the overall function is designed to be recursive.
+The uniqueCommon function does what it's named, and finds the unique common lines between arrays A and B.  This is accomplished first by calling findUnique individually for arrays A and B, at which point two Maps represent the unique lines in A and the unique lines in B.  Then array A is walked, looking for the corresponding line in array B.  If found, the A Map value is supplemented with the corresponding matching B Map index value, otherwise the A Map entry is deleted as there is no matching unique line in B.  Again, this function takes lo and hi ranges, as the overall function is designed to be recursive.
 
-In terms of complexity, once the A and B Maps are in hand, the uniqueCommon function simply walks the A Map seeking presumably via hash the B Map value, and therefore is also O(N) in a worse case situation in which arrays A and B completely match with unique lines.
+In terms of complexity, once the A and B Maps are in hand, the uniqueCommon function simply walks the A Map seeking, presumably via hash, the B Map value, and therefore is also O(N) in a worse case situation in which arrays A and B completely match with unique lines.
 
 ### longestCommonSubsequence(abMap) returns Array
 The longestCommonSubsequence algorithm is best described by the "Alfedenzo" article at https://alfedenzo.livejournal.com/170301.html.  Suffice to say, it walks the result of uniqueCommon to build a jagged array, and then walks this jagged array backwards to find the longest common subsequence.  Since the jagged array is walked backwards, it is reversed and then returned.
@@ -39,14 +39,14 @@ The longestCommonSubsequence algorithm is best described by the "Alfedenzo" arti
 In terms of complexity, again this is O(N) worse case, as the three (3) steps are all single pass linear in nature: 1) building the jagged array, 2) walking the jagged array backwards, and 3) reversing the result before returning.
 
 ### addSubMatch(aLo, aHi, bLo, bHi) adds values to the "result" array
-Here's where it gets fun.  The addSubMatch function is being told that A[Lo-aHi] and B[bLo-bHi] inclusive, represent a range between a pair of matching unique values discovered by the longestCommonSubsequence (LCS).  That being said, there are edge cases at the beginning and end of the LCS, in which there might be lines in either array A or B before the first unique common line is found, and the same goes for lines occurring after the last unique common line found.  And generally speaking, when the range between an LCS pair is passed, the lo entry is included but not hi entry, as the hi entry becomes the lo on the next iteration of calling addSubMatch.  Again, indexes to the A and B arrays are passed to addSubMatch to avoid the performance hit of creating slices.
+Here's where it gets fun.  The addSubMatch function is being told that A[Lo-aHi] and B[bLo-bHi] inclusive, represent a range between a pair of matching unique values discovered by the longestCommonSubsequence (LCS).  That being said, there are edge cases at the beginning and end of the LCS, in which there might be lines in either array A or B before the first unique common line is found, and the same goes for lines occurring after the last unique common line found.  And generally speaking, when the range between an LCS pair is passed, the lo entry is included but not the hi entry, as the hi entry becomes the lo on the next iteration of calling addSubMatch.  Again, indexes to the A and B arrays are passed to addSubMatch to avoid the performance hit of creating slices.
 
 By example, let's say for text line arrays A[0..22] and B[0..28], the LCS found the following three (3) unique matches:
 - A[5]  === B[7]
 - A[12] === B[14]
 - A[15] === B[20]
 
-The sequence of calls to addSubMatches will be with the following ranges:
+Then, the sequence of calls to addSubMatches will be with the following ranges:
 - A[0..4]   /  B[0..6]
 - A[5..11]  /  B[7..13]
 - A[12..14] /  B[14..19]
@@ -58,12 +58,14 @@ In terms of complexity, addSubMatch on its own is linear and therefore O(N), but
 
 ### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds to "result" array via addSubMatch
 Finally we get to the main routine, which basically starts with the entire A and B array ranges, performing the following logic:
-- Get the longest common subsequence (LCS) of unique lines for the provided range A[aLo..aHi] and B[bLo..bHi].
-- If there are no unique lines, then call addSubMatch with the entire range to add the lines to the "result" array.
+- Get the longest common subsequence (LCS) of unique common lines for the provided range A[aLo..aHi] and B[bLo..bHi].
+- If there are no unique common lines, then call addSubMatch with the entire range to add the lines to the "result" array.
 - If the LCS did return some unique lines in common for the provided range, then:
   - call addSubMatch with any lines preceding the first LCS entry.
-  - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch).
+  - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch) for the rows between the LCS entries.
   - And finally, call addSubMatch with any lines following the last LCS entry.
+When complete, the "result" array will contain the ordered list of lines representing the Patience Diff.
+
 
 Voila! An enjoyable algorithm to code for one who seeks elegant solutions...
 
