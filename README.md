@@ -52,14 +52,14 @@ The sequence of calls to addSubMatches will be with the following ranges:
 - A[12..14] /  B[14..19]
 - A[15..22] /  B[20..28]
 
-Once addSubMatch begins processing, the first thing it does is match any lines at the beginning and ending of the A and B ranges.  The matches at the beginning are added to the "results" array.  The matches at the end of the range are held, until the disposition of the sandwiched lines are dealt with by determining if this remaining subsequence has any unique lines in common between arrays A and B, in which case a recursive call is made to the core recurseLCS function.  If there are no unique lines in common, then we're at a point where anything in array A can be included in "results" as having been removed, and anything in array B can be included in "results" as having been added.  If having traveled the recursion path, once the recursion unwinds, any intervening results will have been placed on the "results" array, at which time now addSubMatch can place the matches found at the end of the original subsequence on the "results" array, ensuring the proper order of the results.
+Once addSubMatch begins processing, the first thing it does is match any lines at the beginning and ending of the A and B ranges.  The matches at the beginning are added to the "result" array.  The matches at the end of the range are held, until the disposition of the sandwiched lines are dealt with by determining if this remaining subsequence has any unique lines in common between arrays A and B, in which case a recursive call is made to the core recurseLCS function.  If there are no unique lines in common, then we're at a point where anything in array A can be included in "result" as having been removed, and anything in array B can be included in "result" as having been added.  If having traveled the recursion path, once the recursion unwinds, any intervening results will have been placed on the "result" array, at which time now addSubMatch can place the matches found at the end of the original subsequence on the "result" array, ensuring the proper order of the results.
 
 In terms of complexity, addSubMatch on its own is linear and therefore O(N), but the occasional recursion in essense is recalculating uniqueCommon lines in the smaller subsequence.  It kinda smells like O(N log N) worse case, and in best case (where both arrays A and B virtually match), addSubMatch will be O(N) due to little or no recursion.  A large sample of tests would be required to verify...
 
-### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds to "results" array via addSubMatch
+### recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) adds to "result" array via addSubMatch
 Finally we get to the main routine, which basically starts with the entire A and B array ranges, performing the following logic:
 - Get the longest common subsequence (LCS) of unique lines for the provided range A[aLo..aHi] and B[bLo..bHi].
-- If there are no unique lines, then call addSubMatch with the entire range to add the lines to the "results" array.
+- If there are no unique lines, then call addSubMatch with the entire range to add the lines to the "result" array.
 - If the LCS did return some unique lines in common for the provided range, then:
   - call addSubMatch with any lines preceding the first LCS entry.
   - Then loop through the LCS entries calling addSubMatch (see explanation in addSubMatch).
