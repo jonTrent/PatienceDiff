@@ -200,7 +200,7 @@ function patienceDiff(aLines, bLines) {
         addSubMatch(x[i].indexA, x[i+1].indexA-1, x[i].indexB, x[i+1].indexB-1);
       }
       
-      if (x[i].indexA < aHi || x[i].indexB < bHi) {
+      if (x[i].indexA <= aHi || x[i].indexB <= bHi) {
         addSubMatch(x[i].indexA, aHi, x[i].indexB, bHi);
       }
     }
