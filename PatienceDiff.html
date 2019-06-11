@@ -35,7 +35,7 @@ function calcDiff() {
   var diff = patienceDiff(a , b);
   
   var diffLines = "";
-  diff.forEach((o) => {
+  diff.lines.forEach((o) => {
     if (o.aIndex < 0) {
       diffLines += "+  ";
     } else if (o.bIndex < 0) {
