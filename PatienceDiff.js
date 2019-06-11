@@ -119,7 +119,7 @@ function patienceDiff(aLines, bLines) {
     return lcs.reverse();
   }
 
-  // "result" is the arracy used to accumulate the aLines that are removed, the
+  // "result" is the array used to accumulate the aLines that are removed, the
   // lines that are shared between aLines and bLines, and the bLines that were
   // added.
   let result = [];
