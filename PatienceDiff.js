@@ -119,10 +119,12 @@ function patienceDiff(aLines, bLines) {
     return lcs.reverse();
   }
 
-  // "result" is the array used to accumulate the aLines that are removed, the
+  // "result" is the arracy used to accumulate the aLines that are removed, the
   // lines that are shared between aLines and bLines, and the bLines that were
   // added.
   let result = [];
+  let removed = 0;
+  let added = 0;
   
   //
   // addToResult simply pushes the latest value onto the "result" array.  This
@@ -130,6 +132,8 @@ function patienceDiff(aLines, bLines) {
   // and bLines array.
   //
   function addToResult(aIndex, bIndex) {
+    removed += (bIndex < 0) ? 1 : 0;
+    added += (aIndex < 0) ? 1 : 0;
     result.push({line: 0 <= aIndex ? aLines[aIndex] : bLines[bIndex], aIndex: aIndex, bIndex: bIndex});
   }
   
@@ -208,5 +212,5 @@ function patienceDiff(aLines, bLines) {
   
   recurseLCS(0, aLines.length-1, 0, bLines.length-1);
   
-  return result;
+  return {lines: result, lineCountRemoved: removed, lineCountAdded: added};
 }
