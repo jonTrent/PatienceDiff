@@ -10,10 +10,13 @@ where:<br>
 * aLines[] = array of strings representing the original lines of text.
 * bLines[] = array of strings representing the new lines of text.
     
-* result[] = array of objects, with properties of:
-  * line = line of text from either aLines or bLines.
-  * aIndex = index of original line in aLines, or -1 if line is added from bLines.
-  * bIndex = index of new line in bLines, or -1 if line is deleted from aLines.
+* result[] = object containing three properties.
+  * lines = array of objects, with properties of:
+    * line = line of text from either aLines or bLines.
+    * aIndex = index of original line in aLines, or -1 if line is added from bLines.
+    * bIndex = index of new line in bLines, or -1 if line is deleted from aLines.
+  * lineCountRemoved = the number of lines from aLines[] as having been removed.
+  * lineCountAdded = the number of lines from bLines[] as having been added.
 
 # Example
 Simply download the PatienceDiff.js file which contains the complete algorithm, and PatienceDiff.html which exemplifies how to use the algorithm.  Then open PatienceDiff.html in a browser, and press the "=> Diff =>" button to calculate the difference between the two blocks of text.
