@@ -1,10 +1,12 @@
 # PatienceDiff
-A concise javascript implementation of the Patience Diff algorithm.
+A concise javascript implementation of the Patience Diff algorithm
+
+Plus, an implementation of a new algorithm dubbed Patience Diff Plus, which in addition to the usual Patience Diff, identifies lines that moved.
 
 # Interface
 ### PatienceDiff(aLines, bLines)
 
-<b>result = patienceDiff(aLines, bLines)</b>
+<b>result = patienceDiff(aLines, bLines)</b> - or - <b>result = patienceDiffPlus(aLines, bLines)</b>
 
 where:<br>
 * aLines[] = array of strings representing the original lines of text.
@@ -15,13 +17,22 @@ where:<br>
     * line = line of text from either aLines or bLines.
     * aIndex = index of original line in aLines, or -1 if line is added from bLines.
     * bIndex = index of new line in bLines, or -1 if line is deleted from aLines.
-  * lineCountRemoved = the number of lines from aLines[] as having been removed.
+    * moved = true if the line was moved from elsewhere in aLines[] or bLines[]. This only applies to PatienceDiffPlus
+  * lineCountDeleted = the number of lines from aLines[] as having been removed.
   * lineCountAdded = the number of lines from bLines[] as having been added.
+  * lineCountMoved = the number of lines moved outside the Longest Common Subsequence.
 
 # Example
 Simply download the PatienceDiff.js file which contains the complete algorithm, and PatienceDiff.html which exemplifies how to use the algorithm.  Then open PatienceDiff.html in a browser, and press the "=> Diff =>" button to calculate the difference between the two blocks of text.
 
 ![Results of javascript Patience Diff](PatienceDiff.png)
+
+# Explanation of the Patience Diff Plus Algorithm
+The Patience Diff Plus algorithm is a new algorithm that takes the results of the deleted aLines[] and added bLines[] from the PatienceDiff algorithm, and determines if any of these lines were the result of moving lines about.  In essence, the deleted lines and added lines actually fall outside the recursively applied Longest Common Subsequence (LCS), and therefore might likely have been some lines that were moved about.
+
+The algorithm is quite straightforward.  The residual deleted aLines[] and added bLines[] themselves are passed back through the Patience Diff algorithm (!) in order to seek the LCS of the lines that did not match during the initial Patience Diff.  Ie, find the sequences that match for those aLines[] and bLines[] that were not in common, as they could be lines that were moved about.  If some matches are found, then flag these matching aLines[] and bLines[] as having moved.  Then, continue this process again with the remaining aLines[] and bLines[], until no more matches are found.
+
+#### *An elegant solution that extends the Patience Diff algorithm by employing itself!*
 
 # Explanation of the Patience Diff Algorithm
 The algorithm is best explained by describing the supporting algorithms.
