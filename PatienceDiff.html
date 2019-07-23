@@ -29,19 +29,27 @@ function init() {
   document.getElementById("bLines").value = bLines;
 }
 
-function calcDiff() {
+function calcDiff(diffVsPlus) {
   var a = document.getElementById("aLines").value.split("\n");
   var b = document.getElementById("bLines").value.split("\n");
-  var diff = patienceDiff(a , b);
+  if (diffVsPlus) {
+    var diff = patienceDiff(a , b);
+  } else {
+    var diff = patienceDiffPlus(a , b);
+  }
   
   var diffLines = "";
   diff.lines.forEach((o) => {
-    if (o.aIndex < 0) {
-      diffLines += "+  ";
+    if (o.bIndex < 0 && o.moved) {
+      diffLines += "-m  ";
+    } else if (o.moved) {
+      diffLines += "+m  ";
+    } else if (o.aIndex < 0) {
+      diffLines += "+   ";
     } else if (o.bIndex < 0) {
-      diffLines += "-  ";
+      diffLines += "-   ";
     } else {
-      diffLines += "   ";
+      diffLines += "    ";
     }
     diffLines += o.line + "\n";
   });
@@ -54,7 +62,8 @@ function calcDiff() {
 <div>
 <textarea id="aLines" style="width:25%; height:100%"></textarea>
 <textarea id="bLines" style="width:25%; height:100%"></textarea>
-<button type="button" onclick="calcDiff()" style="position:absolute; top:25%; left:55%">=> Diff =></button>
+<button type="button" onclick="calcDiff(true)" style="position:absolute; top:25%; left:55%">=> Diff =></button>
+<button type="button" onclick="calcDiff(false)" style="position:absolute; top:35%; left:55%">=> DiffPlus =></button>
 <textarea id="diff" style="float:right; width:33%; height:100%;"></textarea>
 </div>
 

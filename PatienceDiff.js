@@ -1,22 +1,33 @@
 
 /**
- * @fileOverview patienceDiff algorithm implemented in javascript.
- * @author Jonathan Trent
- * @version 1.0
+ * program: "patienceDiff" algorithm implemented in javascript.
+ * author: Jonathan Trent
+ * version: 2.0
  *
- * @function patienceDiff
- * @param {string[]} aLines Old array of text lines.
- * @param {string[]} bLines New array of text lines.
+ * use:  patienceDiff( aLines[], bLines[], diffPlusFlag)
  *
- * @returns {object[]} Returns an array of objects with attributes of
- * "line", "aIndex", and "bIndex".  The line is text from either aLines
- * or bLines, with aIndex and bIndex referencing the original index. If
- * aIndex === -1 then the line is new from bLines, and if bIndex === -1
- * then the line is old from aLines.
+ * where:
+ *      aLines[] contains the original text lines.
+ *      bLines[] contains the new text lines.
+ *      diffPlusFlag if true, returns additional arrays with the subset of lines that were
+ *          either deleted or added.  These additional arrays are used by patienceDiffPlus.
+ *
+ * returns an object with the following properties:
+ *      lines[] with properties of:
+ *          line containing the line of text from aLines or bLines.
+ *          aIndex referencing the index in aLine[].
+ *          bIndex referencing the index in bLines[].
+ *              (Note:  The line is text from either aLines or bLines, with aIndex and bIndex
+ *               referencing the original index. If aIndex === -1 then the line is new from bLines,
+ *               and if bIndex === -1 then the line is old from aLines.)
+ *          moved is true if the line was moved from elsewhere in aLines[] or bLines[].
+ *      lineCountDeleted is the number of lines from aLines[] not appearing in bLines[].
+ *      lineCountAdded is the number of lines from bLines[] not appearing in aLines[].
+ *      lineCountMoved is the number of lines moved outside of the Longest Common Subsequence.
  *
  */
 
-function patienceDiff(aLines, bLines) {
+function patienceDiff(aLines, bLines, diffPlusFlag) {
    
   //
   // findUnique finds all unique values in arr[lo..hi], inclusive.  This
@@ -119,12 +130,20 @@ function patienceDiff(aLines, bLines) {
     return lcs.reverse();
   }
 
-  // "result" is the array used to accumulate the aLines that are removed, the
+  // "result" is the array used to accumulate the aLines that are deleted, the
   // lines that are shared between aLines and bLines, and the bLines that were
   // added.
   let result = [];
-  let removed = 0;
+  let deleted = 0;
   let added = 0;
+  
+  // aMove and bMove will contain the lines that don't match, and will be returned
+  // for possible searching of lines that moved.
+  
+  let aMove = [];
+  let aMoveIndex = [];
+  let bMove = [];
+  let bMoveIndex = [];
   
   //
   // addToResult simply pushes the latest value onto the "result" array.  This
@@ -132,8 +151,19 @@ function patienceDiff(aLines, bLines) {
   // and bLines array.
   //
   function addToResult(aIndex, bIndex) {
-    removed += (bIndex < 0) ? 1 : 0;
-    added += (aIndex < 0) ? 1 : 0;
+    //deleted += (bIndex < 0) ? 1 : 0;
+    //added += (aIndex < 0) ? 1 : 0;
+    
+    if (bIndex < 0) {
+      aMove.push(aLines[aIndex]);
+      aMoveIndex.push(result.length);
+      deleted++;
+    } else if (aIndex < 0) {
+      bMove.push(bLines[bIndex]);
+      bMoveIndex.push(result.length);
+      added++;
+    }
+
     result.push({line: 0 <= aIndex ? aLines[aIndex] : bLines[bIndex], aIndex: aIndex, bIndex: bIndex});
   }
   
@@ -162,7 +192,7 @@ function patienceDiff(aLines, bLines) {
     // whether there are any unique common lines between aLines and bLines.
     //
     // If not, add the subsequence to the result (all aLines having been
-    // removed, and all bLines having been added).
+    // deleted, and all bLines having been added).
     //
     // If there are unique common lines between aLines and bLines, then let's
     // recursively perform the patience diff on the subsequence.
@@ -212,5 +242,92 @@ function patienceDiff(aLines, bLines) {
   
   recurseLCS(0, aLines.length-1, 0, bLines.length-1);
   
-  return {lines: result, lineCountRemoved: removed, lineCountAdded: added};
+  if (diffPlusFlag) {
+    return {lines: result, lineCountDeleted: deleted, lineCountAdded: added, lineCountMoved: 0, aMove: aMove, aMoveIndex: aMoveIndex, bMove: bMove, bMoveIndex: bMoveIndex};
+  }
+  
+  return {lines: result, lineCountDeleted: deleted, lineCountAdded: added, lineCountMoved:0};
+}
+
+/**
+ * program: "patienceDiffPlus" algorithm implemented in javascript.
+ * author: Jonathan Trent
+ * version: 2.0
+ *
+ * use:  patienceDiffPlus( aLines[], bLines[] )
+ *
+ * where:
+ *      aLines[] contains the original text lines.
+ *      bLines[] contains the new text lines.
+ *
+ * returns an object with the following properties:
+ *      lines[] with properties of:
+ *          line containing the line of text from aLines or bLines.
+ *          aIndex referencing the index in aLine[].
+ *          bIndex referencing the index in bLines[].
+ *              (Note:  The line is text from either aLines or bLines, with aIndex and bIndex
+ *               referencing the original index. If aIndex === -1 then the line is new from bLines,
+ *               and if bIndex === -1 then the line is old from aLines.)
+ *          moved is true if the line was moved from elsewhere in aLines[] or bLines[].
+ *      lineCountDeleted is the number of lines from aLines[] not appearing in bLines[].
+ *      lineCountAdded is the number of lines from bLines[] not appearing in aLines[].
+ *      lineCountMoved is the number of lines moved outside of the Longest Common Subsequence.
+ *
+ */
+ 
+function patienceDiffPlus( aLines, bLines ) {
+
+  let difference = patienceDiff( aLines, bLines, true );
+
+  let aMoveNext = difference.aMove;
+  let aMoveIndexNext = difference.aMoveIndex;
+  let bMoveNext = difference.bMove;
+  let bMoveIndexNext = difference.bMoveIndex;
+   
+  delete difference.aMove;
+  delete difference.aMoveIndex;
+  delete difference.bMove;
+  delete difference.bMoveIndex;
+    
+  do {
+
+    let aMove = aMoveNext;
+    let aMoveIndex = aMoveIndexNext;
+    let bMove = bMoveNext;
+    let bMoveIndex = bMoveIndexNext;
+    
+    aMoveNext = [];
+    aMoveIndexNext = [];
+    bMoveNext = [];
+    bMoveIndexNext = [];
+      
+    let subDiff = patienceDiff( aMove, bMove );
+
+    var lastLineCountMoved = difference.lineCountMoved;
+    
+    subDiff.lines.forEach( (v, i) => {
+
+      if (0 <= v.aIndex && 0 <= v.bIndex) {
+        difference.lines[aMoveIndex[v.aIndex]].moved = true;
+        difference.lines[bMoveIndex[v.bIndex]].aIndex = aMoveIndex[v.aIndex];
+        difference.lines[bMoveIndex[v.bIndex]].moved = true;
+        difference.lineCountAdded--;
+        difference.lineCountDeleted--;
+        difference.lineCountMoved++;
+        foundFlag = true;
+      } else if (v.bIndex < 0) {
+        aMoveNext.push(aMove[v.aIndex]);
+        aMoveIndexNext.push(aMoveIndex[v.aIndex]);
+      } else {  // if (v.aIndex < 0)
+        bMoveNext.push(bMove[v.bIndex]);
+        bMoveIndexNext.push(bMoveIndex[v.bIndex]);
+      }
+
+    });
+      
+    console.log(subDiff);
+    
+  } while ( 0 < difference.lineCountMoved - lastLineCountMoved );
+
+return difference;
 }
