@@ -1,7 +1,7 @@
 # PatienceDiff
-A concise javascript implementation of the Patience Diff algorithm
+A concise javascript implementation of the *Patience Diff* algorithm
 
-Plus, an implementation of a new algorithm dubbed Patience Diff Plus, which in addition to the usual Patience Diff, identifies lines that moved.
+Plus, an implementation of a new algorithm dubbed *Patience Diff Plus*, which in addition to the usual Patience Diff, identifies lines that moved.
 
 # Interface
 ### PatienceDiff(aLines, bLines)
