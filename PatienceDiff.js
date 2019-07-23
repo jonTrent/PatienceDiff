@@ -324,8 +324,6 @@ function patienceDiffPlus( aLines, bLines ) {
       }
 
     });
-      
-    console.log(subDiff);
     
   } while ( 0 < difference.lineCountMoved - lastLineCountMoved );
 
