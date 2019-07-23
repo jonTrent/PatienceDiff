@@ -28,11 +28,11 @@ Simply download the PatienceDiff.js file which contains the complete algorithm, 
 ![Results of javascript Patience Diff](PatienceDiff.png)
 
 # Explanation of the Patience Diff Plus Algorithm
-The Patience Diff Plus algorithm is a new algorithm that takes the results of the deleted aLines[] and added bLines[] from the PatienceDiff algorithm, and determines if any of these lines were the result of moving lines about.  In essence, the deleted lines and added lines actually fall outside the recursively applied Longest Common Subsequence (LCS), and therefore might likely have been some lines that were moved about.
+The PatienceDiffPlus algorithm is a new algorithm that extends the PatienceDiff algorithm, by taking the deleted aLines[] and added bLines[], and running these back through the PatienceDiff algorithm to determine if any of these lines were actually moves (ie, a combination of deleting and then adding a line).  In essence, PatienceDiffPlus looks at the deleted and added lines that fall outside the Longest Common Subsequence to determine if they were actually line moves rather than unique lines that were either deleted or added.
 
-The algorithm is quite straightforward.  The residual deleted aLines[] and added bLines[] themselves are passed back through the Patience Diff algorithm (!) in order to seek the LCS of the lines that did not match during the initial Patience Diff.  Ie, find the sequences that match for those aLines[] and bLines[] that were not in common, as they could be lines that were moved about.  If some matches are found, then flag these matching aLines[] and bLines[] as having moved.  Then, continue this process again with the remaining aLines[] and bLines[], until no more matches are found.
+The algorithm is elegantly straightforward.  The residual deleted aLines[] and added bLines[] themselves are passed back through the PatienceDiff algorithm(!) in order to seek the LCS of the lines that did not match during the initial PatienceDiff.  If some matches are found in this run against the deleted and added lines, then flag these matching aLines[] and bLines[] as having been moved.  Then, continue this process again with the remaining aLines[] and bLines[], until no more matches (ie, line moves) are found.
 
-#### *An elegant solution that extends the Patience Diff algorithm by employing itself!*
+#### *An elegant solution that extends the PatienceDiff algorithm by employing itself!*
 
 # Explanation of the Patience Diff Algorithm
 The algorithm is best explained by describing the supporting algorithms.
