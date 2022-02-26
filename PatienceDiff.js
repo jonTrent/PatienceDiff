@@ -40,7 +40,7 @@ function patienceDiff(aLines, bLines, diffPlusFlag) {
   // 
   function findUnique(arr, lo, hi) {
     
-    var lineMap = new Map();
+    let lineMap = new Map();
     
     for (let i = lo; i <= hi; i++) {
       let line = arr[i];
@@ -97,7 +97,7 @@ function patienceDiff(aLines, bLines, diffPlusFlag) {
   //
   function longestCommonSubsequence(abMap) {
     
-    var ja = [];
+    let ja = [];
     
     // First, walk the list creating the jagged array.
     abMap.forEach((val, key, map) => {
@@ -118,10 +118,10 @@ function patienceDiff(aLines, bLines, diffPlusFlag) {
     });
     
     // Now, pull out the longest common subsequence.
-    var lcs = [];
+    let lcs = [];
     if (0 < ja.length) {
       let n = ja.length - 1;
-      var lcs = [ja[n][ja[n].length - 1]];
+      let lcs = [ja[n][ja[n].length - 1]];
       while (lcs[lcs.length - 1].prev) {
         lcs.push(lcs[lcs.length - 1].prev);
       }
@@ -219,7 +219,7 @@ function patienceDiff(aLines, bLines, diffPlusFlag) {
   // none found, at which point the subsequence is dumped to the result.
   //
   function recurseLCS(aLo, aHi, bLo, bHi, uniqueCommonMap) {
-    var x = longestCommonSubsequence(uniqueCommonMap || uniqueCommon(aLines, aLo, aHi, bLines, bLo, bHi));
+    let x = longestCommonSubsequence(uniqueCommonMap || uniqueCommon(aLines, aLo, aHi, bLines, bLo, bHi));
     if (x.length === 0) {
       addSubMatch(aLo, aHi, bLo, bHi);
     } else {
@@ -301,7 +301,7 @@ function patienceDiffPlus( aLines, bLines ) {
       
     let subDiff = patienceDiff( aMove, bMove );
 
-    var lastLineCountMoved = difference.lineCountMoved;
+    let lastLineCountMoved = difference.lineCountMoved;
     
     subDiff.lines.forEach( (v, i) => {
 
@@ -311,8 +311,7 @@ function patienceDiffPlus( aLines, bLines ) {
         difference.lines[bMoveIndex[v.bIndex]].moved = true;
         difference.lineCountInserted--;
         difference.lineCountDeleted--;
-        difference.lineCountMoved++;
-        foundFlag = true;
+        difference.lineCountMoved++;        
       } else if (v.bIndex < 0) {
         aMoveNext.push(aMove[v.aIndex]);
         aMoveIndexNext.push(aMoveIndex[v.aIndex]);
