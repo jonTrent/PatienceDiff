@@ -312,7 +312,6 @@ function patienceDiffPlus( aLines, bLines ) {
         difference.lineCountInserted--;
         difference.lineCountDeleted--;
         difference.lineCountMoved++;
-        foundFlag = true;
       } else if (v.bIndex < 0) {
         aMoveNext.push(aMove[v.aIndex]);
         aMoveIndexNext.push(aMoveIndex[v.aIndex]);
