@@ -53,9 +53,9 @@ function patienceDiff( aLines, bLines, diffPlusFlag ) {
 			} else {
 
 				lineMap.set( line, {
-          count: 1,
-          index: i
-        } );
+					count: 1,
+					index: i
+				} );
 
 			}
 
@@ -399,7 +399,7 @@ function patienceDiffPlus( aLines, bLines ) {
 	delete difference.bMove;
 	delete difference.bMoveIndex;
   
-  let lastLineCountMoved;
+	let lastLineCountMoved;
 
 	do {
 
@@ -415,7 +415,7 @@ function patienceDiffPlus( aLines, bLines ) {
 
 		let subDiff = patienceDiff( aMove, bMove );
     
-    lastLineCountMoved = difference.lineCountMoved;
+		lastLineCountMoved = difference.lineCountMoved;
 
 		subDiff.lines.forEach( ( v, i ) => {
 
