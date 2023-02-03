@@ -1,15 +1,26 @@
 /**
  * program: "patienceDiff" algorithm implemented in javascript.
  * author: Jonathan Trent
- * version: 2.0
+ * version: 3.0
  *
  * use:  patienceDiff( aLines[], bLines[], diffPlusFlag )
+ *       patienceDiff( aString,  bString,  diffPlusFlag )
  *
  * where:
  *      aLines[] contains the original text lines.
  *      bLines[] contains the new text lines.
+ *
+ *      aString contains the original string.
+ *      bString contains the new string.
+ *
  *      diffPlusFlag if true, returns additional arrays with the subset of lines that were
  *          either deleted or inserted.  These additional arrays are used by patienceDiffPlus.
+ *
+ * Note that if strings are passed, the patience diff algorithm has been enhanced to
+ * iteratively seek common unique string chunks between aString and bString, to accommodate
+ * the fact that the larger a string, the less likely that unique individual characters 
+ * will be present, thereby shortcircuiting the step of finding the longest common
+ * subsequence...
  *
  * returns an object with the following properties:
  *      lines[] with properties of:
@@ -37,18 +48,17 @@ function patienceDiff( aLines, bLines, diffPlusFlag ) {
 	// array index i as the Map value.
 	//
   
-	function findUnique( arr, lo, hi ) {
+	function findUnique( arr, lo, hi, unit ) {
 
 		const lineMap = new Map();
 
-		for ( let i = lo; i <= hi; i ++ ) {
+		for ( let i = lo; i <= hi + 1 - unit; i ++ ) {
 
-			let line = arr[ i ];
+			let line = arr.slice( i, i + unit );
       
 			if ( lineMap.has( line ) ) {
 
 				lineMap.get( line ).count ++;
-				lineMap.get( line ).index = i;
 
 			} else {
 
@@ -92,26 +102,34 @@ function patienceDiff( aLines, bLines, diffPlusFlag ) {
   
 	function uniqueCommon( aArray, aLo, aHi, bArray, bLo, bHi ) {
 
-		const ma = findUnique( aArray, aLo, aHi );
-		const mb = findUnique( bArray, bLo, bHi );
+    let chunkSize = 0, ma, mb;
+    
+    do {
+      
+      chunkSize ++;
+      
+      ma = findUnique( aArray, aLo, aHi, chunkSize );
+      mb = findUnique( bArray, bLo, bHi, chunkSize );
 
-		ma.forEach( ( val, key, map ) => {
+      ma.forEach( ( val, key, map ) => {
 
-			if ( mb.has( key ) ) {
+        if ( mb.has( key ) ) {
 
-				map.set( key, {
-					indexA: val,
-					indexB: mb.get( key )
-				} );
+          map.set( key, {
+            indexA: val,
+            indexB: mb.get( key )
+          } );
 
-			} else {
+        } else {
 
-				map.delete( key );
+          map.delete( key );
 
-			}
+        }
 
-		} );
-
+      } );
+      
+    } while ( ma.size === 0 && chunkSize <= aHi - aLo + 1 && chunkSize < bHi - bLo + 1 && typeof aArray === 'string' );
+    
 		return ma;
 
 	}
@@ -261,7 +279,11 @@ function patienceDiff( aLines, bLines, diffPlusFlag ) {
 		// If there are unique common lines between aLines and bLines, then let's
 		// recursively perform the patience diff on the subsequence.
     
-		const uniqueCommonMap = uniqueCommon( aLines, aLo, aHi, bLines, bLo, bHi );
+		let uniqueCommonMap = uniqueCommon( aLines, aLo, aHi, bLines, bLo, bHi );
+    //let unit = 2;
+    //while ( typeof aLines === 'string' && uniqueCommonMap.size === 0 && unit < aLines.length && unit < bLines.length ) {
+    //  uniqueCommonMap = uniqueCommon( aLines, aLo, aHi, bLines, bLo, bHi, unit++ );
+    //}
     
 		if ( uniqueCommonMap.size === 0 ) {
 
